@@ -1,0 +1,62 @@
+﻿<Window x:Class="CevioOutSide.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CevioOutSide"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525"
+		>
+	<Window.DataContext>
+		<local:mainViewModel></local:mainViewModel>
+	</Window.DataContext>
+
+	<Window.Resources>
+		<Style TargetType="Slider">
+			<Setter Property="Maximum" Value="100"></Setter>
+			<Setter Property="Minimum" Value="0"></Setter>
+		</Style>
+	</Window.Resources>
+	<DockPanel>
+		<StackPanel DockPanel.Dock="Top">
+			<StackPanel.Resources>
+				<Style TargetType="TextBox">
+					<Setter Property="DockPanel.Dock" Value="Right"></Setter>
+				</Style>
+			</StackPanel.Resources>
+			<GroupBox Header="Volume">
+				<DockPanel >
+					<TextBox Text="{Binding Value, ElementName=VolumeSlider}"></TextBox>
+					<Slider x:Name="VolumeSlider" Value="{Binding Volume}"></Slider>
+				</DockPanel>
+			</GroupBox>
+			<GroupBox Header="Speed">
+				<DockPanel >
+					<TextBox Text="{Binding Value, ElementName=SpeedSlider}"></TextBox>
+					<Slider x:Name="SpeedSlider" Value="{Binding Speed}"></Slider>
+				</DockPanel>
+			</GroupBox>
+			<GroupBox Header="Alpha">
+				<DockPanel >
+					<TextBox Text="{Binding Value, ElementName=AlphaSlider}"></TextBox>
+					<Slider x:Name="AlphaSlider" Value="{Binding Alpha}"></Slider>
+				</DockPanel>
+			</GroupBox>
+			<GroupBox Header="Tone">
+				<DockPanel >
+					<TextBox Text="{Binding Value, ElementName=ToneSlider}"></TextBox>
+					<Slider x:Name="ToneSlider" Value="{Binding Tone}"></Slider>
+				</DockPanel>
+			</GroupBox>
+			<GroupBox Header="ToneScale">
+				<DockPanel >
+					<TextBox Text="{Binding Value, ElementName=ToneScaleSlider}"></TextBox>
+					<Slider x:Name="ToneScaleSlider" Value="{Binding ToneScale}"></Slider>
+				</DockPanel>
+			</GroupBox>
+		</StackPanel>
+		<ComboBox ItemsSource="{Binding AvailabeCast}" SelectedItem="{Binding CurrentCast}"></ComboBox>
+		<Button Content="発生" Click="Button_Click"></Button>
+		<TextBox Text="{Binding TalkText}"></TextBox>
+    </DockPanel>
+</Window>
