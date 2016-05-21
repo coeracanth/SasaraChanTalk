@@ -34,7 +34,9 @@ namespace CevioOutSide
 ;
 		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
 
-		private SpeakingState SpeakingState;
+		private SpeakingState _speakingState;
+
+		public IpcSample.IpcServer server { get; set; }
 
 		public mainViewModel()
 		{
@@ -46,16 +48,17 @@ namespace CevioOutSide
 			Talker.Tone = 50;
 			Talker.Alpha = 50;
 			Talker.ToneScale = 100;
+
+			server = new IpcSample.IpcServer();
 		}
 
 		public void Speak()
 		{
-			if (SpeakingState?.IsCompleted ?? true)
+			if (_speakingState?.IsCompleted ?? true)
 			{
-			SpeakingState = Talker.Speak(TalkText);
+			_speakingState = Talker.Speak(TalkText);
 
 			}
-
 		}
 	}
 

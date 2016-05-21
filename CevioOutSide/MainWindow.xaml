@@ -64,5 +64,6 @@
 			></ComboBox>
 		<Button Content="発生" Click="Button_Click"></Button>
 		<TextBox Text="{Binding TalkText}"></TextBox>
+		<Label Content="{Binding server.RemoteObject.Counter}"></Label>
     </DockPanel>
 </Window>

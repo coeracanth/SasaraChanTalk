@@ -28,6 +28,7 @@ namespace CevioOutSide
 			this._viewMdel = (mainViewModel)DataContext;
 
 			SliderPanel.Children.Add(loadComponentsSlider());
+
 		}
 
 		private StackPanel loadComponentsSlider()
