@@ -52,7 +52,7 @@ namespace CevioOutSide
 		{
 			if (_speakingState?.IsCompleted ?? true)
 			{
-			_speakingState = Talker.Speak(TalkText + server.RemoteObject.Counter.ToString());
+			_speakingState = Talker.Speak(TalkText);
 
 			}
 		}
