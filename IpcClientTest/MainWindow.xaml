@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:IpcClientTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+	<Window.DataContext>
+		<local:IpcViewModel></local:IpcViewModel>
+	</Window.DataContext>
     <Grid>
-		<Label></Label>
+		<Button Content="Count up" Click="Button_Click"></Button>
     </Grid>
 </Window>

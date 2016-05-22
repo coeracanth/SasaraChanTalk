@@ -15,14 +15,33 @@ using System.Windows.Shapes;
 
 namespace IpcClientTest
 {
+	public class IpcViewModel
+	{
+		public IpcSample.IpcClient Client { get; set; }
+
+		public IpcViewModel()
+		{
+			Client = new IpcSample.IpcClient();
+		}
+	}
+
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		private IpcViewModel _viewModel;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			this._viewModel = (IpcViewModel)this.DataContext;
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			this._viewModel.Client.RemoteObject.Counter++;
 		}
 	}
 }

@@ -12,10 +12,8 @@ namespace CevioOutSide
 	{
 		public Talker Talker
 		{
-			get
-;
-			set
-;
+			get;
+			set;
 		} = new Talker();
 
 		public IList<string> AvailabeCast
@@ -28,10 +26,8 @@ namespace CevioOutSide
 
 		public string TalkText
 		{
-			get
-;
-			set
-;
+			get;
+			set;
 		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
 
 		private SpeakingState _speakingState;
@@ -56,7 +52,7 @@ namespace CevioOutSide
 		{
 			if (_speakingState?.IsCompleted ?? true)
 			{
-			_speakingState = Talker.Speak(TalkText);
+			_speakingState = Talker.Speak(TalkText + server.RemoteObject.Counter.ToString());
 
 			}
 		}

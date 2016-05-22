@@ -15,7 +15,7 @@ namespace IpcSample
 		public IpcServer()
 		{
 			// サーバーチャンネルの生成
-			IpcServerChannel channel = new IpcServerChannel("ipcSample");
+			IpcServerChannel channel = new IpcServerChannel("CeVIOTalker");
 
 			// チャンネルを登録
 			ChannelServices.RegisterChannel(channel, true);
@@ -25,7 +25,7 @@ namespace IpcSample
 			RemotingServices.Marshal(RemoteObject, "test", typeof(IpcRemoteObject));
 		}
 	}
-	class IpcClient
+	public class IpcClient
 	{
 		public IpcRemoteObject RemoteObject { get; set; }
 
@@ -41,7 +41,7 @@ namespace IpcSample
 			ChannelServices.RegisterChannel(channel, true);
 
 			// リモートオブジェクトを取得
-			RemoteObject = Activator.GetObject(typeof(IpcRemoteObject), "ipc://ipcSample/test") as IpcRemoteObject;
+			RemoteObject = Activator.GetObject(typeof(IpcRemoteObject), "ipc://CeVIOTalker/test") as IpcRemoteObject;
 		}
 	}
 
