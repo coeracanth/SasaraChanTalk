@@ -18,6 +18,20 @@ namespace IpcClientTest
 	public class IpcViewModel
 	{
 		public IpcSample.IpcClient Client { get; set; }
+		public string text { get; set; }
+
+		public void SetTextToStack()
+		{
+			//null と "" は弾きたい
+			if(text?.Length > 0)
+			{
+				//stackListに直接addできないっぽい
+				var stack = Client.RemoteObject.TalkTextStack;
+				stack.Add(text);
+				Client.RemoteObject.TalkTextStack = stack;
+			}
+
+		}
 
 		public IpcViewModel()
 		{
@@ -41,7 +55,7 @@ namespace IpcClientTest
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			this._viewModel.Client.RemoteObject.Counter++;
+			_viewModel.SetTextToStack();
 		}
 	}
 }
