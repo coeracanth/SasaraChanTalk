@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.Remoting.Lifetime;
 
 namespace IpcSample
 {
@@ -38,6 +39,9 @@ namespace IpcSample
 		/// </summary>
 		public IpcClient()
 		{
+			LifetimeServices.LeaseTime = TimeSpan.Zero;
+			LifetimeServices.RenewOnCallTime = TimeSpan.Zero;
+
 			// クライアントチャンネルの生成
 			IpcClientChannel channel = new IpcClientChannel();
 
