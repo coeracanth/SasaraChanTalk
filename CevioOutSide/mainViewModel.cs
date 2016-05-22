@@ -32,7 +32,7 @@ namespace CevioOutSide
 
 		private SpeakingState _speakingState;
 
-		public IpcSample.IpcServer server { get; set; }
+		public IpcSample.IpcServer TalkStack { get; set; }
 
 		public mainViewModel()
 		{
@@ -45,16 +45,56 @@ namespace CevioOutSide
 			Talker.Alpha = 50;
 			Talker.ToneScale = 100;
 
-			server = new IpcSample.IpcServer();
+			TalkStack = new IpcSample.IpcServer();
 		}
 
+		/// <summary>
+		/// スタックの先頭をcevioに渡す。
+		/// timerで呼び出しかなあ、
+		/// stateのcompletedを検知できればstackが尽きるまで回すとかできそうだけど
+		/// state.wait()でのループはUI触れなくなるのでなし。
+		/// 別スレッドでやればいいかもしれんがやり方わからん
+		/// </summary>
 		public void Speak()
 		{
 			if (_speakingState?.IsCompleted ?? true)
 			{
-			_speakingState = Talker.Speak(TalkText);
+				var text = TalkStack.RemoteObject.TalkTextStack.FirstOrDefault();
+				if(text == null)
+				{
+					return;
+				}
 
+				//取得できたら削除
+				TalkStack.RemoteObject.TalkTextStack.RemoveAt(0);
+
+				//100文字制限への対応
+				//超過分は分割してスタックの先頭に返す
+				if(text.Length > 100)
+				{
+					var over = text.Substring(100);
+					TalkStack.RemoteObject.TalkTextStack.Insert(0, over);
+
+					text = text.Substring(0, 100);
+				}
+
+				_speakingState = Talker.Speak(text);
 			}
+		}
+
+		public void AddTalkStack()
+		{
+			AddTalkStack(this.TalkText);
+		}
+
+		private void AddTalkStack(string talkText)
+		{
+			TalkStack.RemoteObject.TalkTextStack.Add(talkText);
+		}
+
+		public void DelTalkStack()
+		{
+			TalkStack.RemoteObject.TalkTextStack.Clear();
 		}
 	}
 
@@ -66,5 +106,8 @@ namespace CevioOutSide
 		string TalkText { get; set; }
 
 		void Speak();
+		void DelTalkStack();
+		void AddTalkStack();
+
 	}
 }

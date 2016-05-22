@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CevioOutSide", "CevioOutSid
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpcClientTest", "IpcClientTest\IpcClientTest.csproj", "{D06A0CE5-62EB-4EF5-9CCC-63864672434C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddStacker", "AddStacker\AddStacker.csproj", "{A80277E6-7292-4DDD-ACB0-9D6550281DFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,14 @@ Global
 		{D06A0CE5-62EB-4EF5-9CCC-63864672434C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D06A0CE5-62EB-4EF5-9CCC-63864672434C}.Release|x86.ActiveCfg = Release|Any CPU
 		{D06A0CE5-62EB-4EF5-9CCC-63864672434C}.Release|x86.Build.0 = Release|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Debug|x86.Build.0 = Debug|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A80277E6-7292-4DDD-ACB0-9D6550281DFA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -9,7 +9,8 @@
 	<Window.DataContext>
 		<local:IpcViewModel></local:IpcViewModel>
 	</Window.DataContext>
-    <Grid>
+    <DockPanel>
 		<Button Content="Count up" Click="Button_Click"></Button>
-    </Grid>
+		<TextBox Text="{Binding text}" ></TextBox>
+    </DockPanel>
 </Window>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace CevioOutSide
 {
@@ -21,16 +22,37 @@ namespace CevioOutSide
 	public partial class MainWindow : Window
 	{
 		private IMainViewModel _viewMdel;
+		private DispatcherTimer _timer;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			this._viewMdel = (mainViewModel)DataContext;
 
+			_timer = new DispatcherTimer();
+			_timer.Interval = new TimeSpan(0, 0, 1);
+			_timer.Tick += _timer_Tick;
+			_timer.Start();
+
 			SliderPanel.Children.Add(loadComponentsSlider());
 
 		}
 
+		/// <summary>
+		/// speakの呼び出し
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void _timer_Tick(object sender, EventArgs e)
+		{
+			_viewMdel.Speak();
+		}
+
+
+		/// <summary>
+		/// 感情パラのスライダを動的生成
+		/// </summary>
+		/// <returns></returns>
 		private StackPanel loadComponentsSlider()
 		{
 			var panel = new StackPanel();
@@ -59,21 +81,24 @@ namespace CevioOutSide
 				gbox.Content = dockp;
 
 				panel.Children.Add(gbox);
-
 			}
-
 
 			return panel;
 		}
 
-
+		/// <summary>
+		/// talktextの内容をスタックへ
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			this._viewMdel.Speak();
+			this._viewMdel.AddTalkStack();
 		}
 
 		/// <summary>
-		/// propChangeでできないかなあ
+		/// キャスト変更で感情パラ用スライダを変更
+		/// propChange検知してできないかなあ
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
