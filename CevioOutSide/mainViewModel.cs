@@ -10,94 +10,104 @@ namespace CevioOutSide
 {
 	class mainViewModel:ViewModelBase, IMainViewModel
 	{
-		/// <summary>
-		/// 声の大きさ
-		/// </summary>
-		public uint Volume { get; set; } = 100;
-		/// <summary>
-		/// 話す速さ
-		/// </summary>
-		public uint Speed { get; set; } = 50;
-		/// <summary>
-		/// 声の高さ
-		/// </summary>
-		public uint Tone { get; set; } = 50;
-		/// <summary>
-		/// 声質
-		/// </summary>
-		public uint Alpha { get; set; } = 50;
-		/// <summary>
-		/// 抑揚
-		/// </summary>
-		public uint ToneScale { get; set; } = 100;
-		/// <summary>
-		/// 利用可能なキャスト名
-		/// </summary>
-		public IList<string> AvailabeCast { get { return Talker.AvailableCasts; } }
-		/// <summary>
-		/// 現在選択中のキャスト
-		/// </summary>
-		public string CurrentCast { get; set; }
+		public Talker Talker
+		{
+			get;
+			set;
+		} = new Talker();
+
+		public IList<string> AvailabeCast
+		{
+			get
+			{
+				return Talker.AvailableCasts;
+			}
+		}
 
 		public string TalkText
 		{
-			get
-;
-			set
-;
-		} = "テストですにーよ。テストと言ったらテストなんですにー";
+			get;
+			set;
+		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
 
-		public TalkerComponentCollection TalkerComponentCollection
-		{
-			get
-;
-			set
-;		}
+		private SpeakingState _speakingState;
 
-		public Talker Talker
-		{
-			get
-;
-			set
-;
-		} = new Talker();
+		public IpcSample.IpcServer TalkStack { get; set; }
 
 		public mainViewModel()
 		{
-			ServiceControl.StartHost(true);
-			CurrentCast = AvailabeCast?[0] ?? null;
+			ServiceControl.StartHost(false);
+			Talker.Cast = AvailabeCast?[0] ?? null;
+
+			Talker.Volume = 100;
+			Talker.Speed = 50;
+			Talker.Tone = 50;
+			Talker.Alpha = 50;
+			Talker.ToneScale = 100;
+
+			TalkStack = new IpcSample.IpcServer();
 		}
 
+		/// <summary>
+		/// スタックの先頭をcevioに渡す。
+		/// timerで呼び出しかなあ、
+		/// stateのcompletedを検知できればstackが尽きるまで回すとかできそうだけど
+		/// state.wait()でのループはUI触れなくなるのでなし。
+		/// 別スレッドでやればいいかもしれんがやり方わからん
+		/// </summary>
 		public void Speak()
 		{
-			Talker talker = new Talker(CurrentCast);
+			if (_speakingState?.IsCompleted ?? true)
+			{
+				var text = TalkStack.RemoteObject.TalkTextStack.FirstOrDefault();
+				if(text == null)
+				{
+					return;
+				}
 
-			talker.Volume = this.Volume;
-			talker.Speed = this.Speed;
-			talker.Tone = this.Tone;
-			talker.Alpha = this.Alpha;
-			talker.ToneScale = this.ToneScale;
+				//取得できたら削除
+				TalkStack.RemoteObject.TalkTextStack.RemoveAt(0);
 
-			SpeakingState state = talker.Speak(TalkText);
+				//100文字制限への対応
+				//超過分は分割してスタックの先頭に返す
+				if(text.Length > 100)
+				{
+					var over = text.Substring(100);
+					TalkStack.RemoteObject.TalkTextStack.Insert(0, over);
 
-			state.Wait();
+					text = text.Substring(0, 100);
+				}
+
+				_speakingState = Talker.Speak(text);
+			}
+		}
+
+		public void AddTalkStack()
+		{
+			AddTalkStack(this.TalkText);
+		}
+
+		private void AddTalkStack(string talkText)
+		{
+			TalkStack.RemoteObject.TalkTextStack.Add(talkText);
+		}
+
+		public void DelTalkStack()
+		{
+			TalkStack.RemoteObject.TalkTextStack.Clear();
 		}
 	}
 
 	interface IMainViewModel
 	{
-		uint Volume { get; set; }
-		uint Speed { get; set; }
-		uint Tone { get; set; }
-		uint Alpha { get; set; }
-		uint ToneScale { get; set; }
 		IList<string> AvailabeCast { get; }
-		string CurrentCast { get; set; }
-		string TalkText { get; set; }
-		TalkerComponentCollection TalkerComponentCollection { get; set; }
-
 		Talker Talker { get; set; }
 
+		string TalkText { get; set; }
+
 		void Speak();
+		void DelTalkStack();
+		void AddTalkStack();
+
 	}
 }
