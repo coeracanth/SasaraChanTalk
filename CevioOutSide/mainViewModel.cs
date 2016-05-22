@@ -12,10 +12,8 @@ namespace CevioOutSide
 	{
 		public Talker Talker
 		{
-			get
-;
-			set
-;
+			get;
+			set;
 		} = new Talker();
 
 		public IList<string> AvailabeCast
@@ -28,13 +26,13 @@ namespace CevioOutSide
 
 		public string TalkText
 		{
-			get
-;
-			set
-;
+			get;
+			set;
 		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
 
-		private SpeakingState SpeakingState;
+		private SpeakingState _speakingState;
+
+		public IpcSample.IpcServer server { get; set; }
 
 		public mainViewModel()
 		{
@@ -46,16 +44,17 @@ namespace CevioOutSide
 			Talker.Tone = 50;
 			Talker.Alpha = 50;
 			Talker.ToneScale = 100;
+
+			server = new IpcSample.IpcServer();
 		}
 
 		public void Speak()
 		{
-			if (SpeakingState?.IsCompleted ?? true)
+			if (_speakingState?.IsCompleted ?? true)
 			{
-			SpeakingState = Talker.Speak(TalkText);
+			_speakingState = Talker.Speak(TalkText);
 
 			}
-
 		}
 	}
 
