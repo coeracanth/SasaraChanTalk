@@ -29,6 +29,7 @@ namespace IpcSample
 			RemoteObject = new IpcRemoteObject();
 			RemotingServices.Marshal(RemoteObject, "TextStack", typeof(IpcRemoteObject));
 		}
+
 	}
 	public class IpcClient
 	{
@@ -39,9 +40,6 @@ namespace IpcSample
 		/// </summary>
 		public IpcClient()
 		{
-			LifetimeServices.LeaseTime = TimeSpan.Zero;
-			LifetimeServices.RenewOnCallTime = TimeSpan.Zero;
-
 			// クライアントチャンネルの生成
 			IpcClientChannel channel = new IpcClientChannel();
 
@@ -68,6 +66,14 @@ namespace IpcSample
 			{
 				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
 			}
+		}
+
+		/// <summary>
+		/// タイムアウトを回避する
+		/// </summary>
+		public override object InitializeLifetimeService()
+		{
+			return null;
 		}
 
 	}
