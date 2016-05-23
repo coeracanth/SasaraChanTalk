@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,8 @@ namespace AddStacker
 
 			IpcSample.IpcClient client = new IpcSample.IpcClient();
 
+			try
+			{
 			//null と "" は弾きたい
 			if (text?.Length > 0)
 			{
@@ -28,6 +31,12 @@ namespace AddStacker
 				client.RemoteObject.TalkTextStack = stack;
 			}
 
+			}
+			catch(RemotingException ex)
+			{
+				Console.WriteLine(ex.Message);
+				return;
+			}
 		}
 	}
 }
