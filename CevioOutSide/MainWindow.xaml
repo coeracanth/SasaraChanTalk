@@ -16,53 +16,65 @@
 			<Setter Property="Maximum" Value="100"></Setter>
 			<Setter Property="Minimum" Value="0"></Setter>
 		</Style>
+		<Style TargetType="GroupBox">
+			<Setter Property="Margin" Value="4,0"></Setter>
+		</Style>
 	</Window.Resources>
 	<DockPanel>
-		<StackPanel x:Name="SliderPanel" DockPanel.Dock="Top" Orientation="Horizontal">
-		<StackPanel>
-			<StackPanel.Resources>
+		<Grid x:Name="SliderPanel" DockPanel.Dock="Top" >
+			<Grid.Resources>
 				<Style TargetType="TextBox">
 					<Setter Property="DockPanel.Dock" Value="Right"></Setter>
+					<Setter Property="Width" Value="32"></Setter>
+					<Setter Property="HorizontalContentAlignment" Value="Right"></Setter>
 				</Style>
-			</StackPanel.Resources>
-			<GroupBox Header="Volume">
-				<DockPanel >
-					<TextBox Text="{Binding Value, ElementName=VolumeSlider}"></TextBox>
-					<Slider x:Name="VolumeSlider" Value="{Binding Talker.Volume}"></Slider>
-				</DockPanel>
-			</GroupBox>
-			<GroupBox Header="Speed">
-				<DockPanel >
-					<TextBox Text="{Binding Value, ElementName=SpeedSlider}"></TextBox>
-					<Slider x:Name="SpeedSlider" Value="{Binding Talker.Speed}"></Slider>
-				</DockPanel>
-			</GroupBox>
-			<GroupBox Header="Alpha">
-				<DockPanel >
-					<TextBox Text="{Binding Value, ElementName=AlphaSlider}"></TextBox>
-					<Slider x:Name="AlphaSlider" Value="{Binding Talker.Alpha}"></Slider>
-				</DockPanel>
-			</GroupBox>
-			<GroupBox Header="Tone">
-				<DockPanel >
-					<TextBox Text="{Binding Value, ElementName=ToneSlider}"></TextBox>
-					<Slider x:Name="ToneSlider" Value="{Binding Talker.Tone}"></Slider>
-				</DockPanel>
-			</GroupBox>
-			<GroupBox Header="ToneScale">
-				<DockPanel >
-					<TextBox Text="{Binding Value, ElementName=ToneScaleSlider}"></TextBox>
-					<Slider x:Name="ToneScaleSlider" Value="{Binding Talker.ToneScale}"></Slider>
-				</DockPanel>
-			</GroupBox>
-		</StackPanel>
-		</StackPanel>
+			</Grid.Resources>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition ></ColumnDefinition>
+				<ColumnDefinition ></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<StackPanel>
+				<GroupBox Header="Volume">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=VolumeSlider}"></TextBox>
+						<Slider x:Name="VolumeSlider" Value="{Binding Talker.Volume}"></Slider>
+					</DockPanel>
+				</GroupBox>
+				<GroupBox Header="Speed">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=SpeedSlider}"></TextBox>
+						<Slider x:Name="SpeedSlider" Value="{Binding Talker.Speed}"></Slider>
+					</DockPanel>
+				</GroupBox>
+				<GroupBox Header="Alpha">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=AlphaSlider}"></TextBox>
+						<Slider x:Name="AlphaSlider" Value="{Binding Talker.Alpha}"></Slider>
+					</DockPanel>
+				</GroupBox>
+				<GroupBox Header="Tone">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=ToneSlider}"></TextBox>
+						<Slider x:Name="ToneSlider" Value="{Binding Talker.Tone}"></Slider>
+					</DockPanel>
+				</GroupBox>
+				<GroupBox Header="ToneScale">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=ToneScaleSlider}"></TextBox>
+						<Slider x:Name="ToneScaleSlider" Value="{Binding Talker.ToneScale}"></Slider>
+					</DockPanel>
+				</GroupBox>
+			</StackPanel>
+		</Grid>
 		<ComboBox
 			ItemsSource="{Binding AvailabeCast}"
 			SelectedItem="{Binding Talker.Cast}"
 			SelectionChanged="ComboBox_SelectionChanged"
 			></ComboBox>
-		<Button Content="発生" Click="Button_Click"></Button>
-		<TextBox Text="{Binding TalkText}"></TextBox>
-    </DockPanel>
+		<Button Content="発声" Click="Button_Click"></Button>
+		<StackPanel>
+			<TextBox Text="{Binding NowTalkText}" IsEnabled="False" AcceptsReturn="True" ></TextBox>
+			<TextBox Text="{Binding TalkText}" AcceptsReturn="True" ></TextBox>
+		</StackPanel>
+	</DockPanel>
 </Window>

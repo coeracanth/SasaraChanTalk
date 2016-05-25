@@ -57,6 +57,8 @@ namespace CevioOutSide
 		{
 			var panel = new StackPanel();
 
+			panel.SetValue(Grid.ColumnProperty, 1);
+
 			//foreachは使えないみたい
 			var count = _viewMdel.Talker.Components.Count;
 			for (int counta = 0; counta < count; counta++)

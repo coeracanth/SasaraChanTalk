@@ -5,11 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using ViewModels;
 using CeVIO.Talk.RemoteService;
+using System.Text.RegularExpressions;
 
 namespace CevioOutSide
 {
 	class mainViewModel:ViewModelBase, IMainViewModel
 	{
+		private string _nowTalkText;
+
 		public Talker Talker
 		{
 			get;
@@ -33,6 +36,20 @@ namespace CevioOutSide
 		private SpeakingState _speakingState;
 
 		public IpcSample.IpcServer TalkStack { get; set; }
+
+		public string NowTalkText
+		{
+			get
+			{
+				return _nowTalkText;
+			}
+
+			set
+			{
+				_nowTalkText = value;
+				OnPropertyChanged();
+			}
+		}
 
 		public mainViewModel()
 		{
@@ -68,9 +85,11 @@ namespace CevioOutSide
 				//取得できたら削除
 				TalkStack.RemoteObject.TalkTextStack.RemoveAt(0);
 
+				text = Regex.Replace(text, @"https ?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。");
+
 				//100文字制限への対応
 				//超過分は分割してスタックの先頭に返す
-				if(text.Length > 100)
+				if (text.Length > 100)
 				{
 					var over = text.Substring(100);
 					TalkStack.RemoteObject.TalkTextStack.Insert(0, over);
@@ -78,7 +97,8 @@ namespace CevioOutSide
 					text = text.Substring(0, 100);
 				}
 
-				_speakingState = Talker.Speak(text);
+				NowTalkText = text.ToUpper();
+				_speakingState = Talker.Speak(this.NowTalkText);
 			}
 		}
 
