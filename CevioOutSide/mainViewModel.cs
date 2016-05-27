@@ -31,7 +31,7 @@ namespace CevioOutSide
 		{
 			get;
 			set;
-		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
+		} = "テストですよー？";
 
 		private SpeakingState _speakingState;
 

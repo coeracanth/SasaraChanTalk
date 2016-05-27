@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CevioOutSide"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525"
+        Title="MainWindow"
+		Width="525"
+		SizeToContent="Height"
 		>
 	<Window.DataContext>
 		<local:mainViewModel></local:mainViewModel>
@@ -21,7 +23,7 @@
 		</Style>
 	</Window.Resources>
 	<DockPanel>
-		<Grid x:Name="SliderPanel" DockPanel.Dock="Top" >
+		<Grid x:Name="SliderPanel" DockPanel.Dock="Bottom" Margin="4">
 			<Grid.Resources>
 				<Style TargetType="TextBox">
 					<Setter Property="DockPanel.Dock" Value="Right"></Setter>
@@ -46,16 +48,16 @@
 						<Slider x:Name="SpeedSlider" Value="{Binding Talker.Speed}"></Slider>
 					</DockPanel>
 				</GroupBox>
-				<GroupBox Header="Alpha">
-					<DockPanel >
-						<TextBox Text="{Binding Value, ElementName=AlphaSlider}"></TextBox>
-						<Slider x:Name="AlphaSlider" Value="{Binding Talker.Alpha}"></Slider>
-					</DockPanel>
-				</GroupBox>
 				<GroupBox Header="Tone">
 					<DockPanel >
 						<TextBox Text="{Binding Value, ElementName=ToneSlider}"></TextBox>
 						<Slider x:Name="ToneSlider" Value="{Binding Talker.Tone}"></Slider>
+					</DockPanel>
+				</GroupBox>
+				<GroupBox Header="Alpha">
+					<DockPanel >
+						<TextBox Text="{Binding Value, ElementName=AlphaSlider}"></TextBox>
+						<Slider x:Name="AlphaSlider" Value="{Binding Talker.Alpha}"></Slider>
 					</DockPanel>
 				</GroupBox>
 				<GroupBox Header="ToneScale">
@@ -66,15 +68,20 @@
 				</GroupBox>
 			</StackPanel>
 		</Grid>
+		<DockPanel Margin="4">
+			
+		<StackPanel>
 		<ComboBox
+			VerticalAlignment="Top"
+			Width="80"
 			ItemsSource="{Binding AvailabeCast}"
 			SelectedItem="{Binding Talker.Cast}"
 			SelectionChanged="ComboBox_SelectionChanged"
 			></ComboBox>
 		<Button Content="発声" Click="Button_Click"></Button>
-		<StackPanel>
-			<TextBox Text="{Binding NowTalkText}" IsEnabled="False" AcceptsReturn="True" ></TextBox>
-			<TextBox Text="{Binding TalkText}" AcceptsReturn="True" ></TextBox>
 		</StackPanel>
+			<TextBox Text="{Binding NowTalkText}" DockPanel.Dock="Top" IsEnabled="False" AcceptsReturn="True" ></TextBox>
+			<TextBox Text="{Binding TalkText}" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" MinHeight="60" />
+		</DockPanel>
 	</DockPanel>
 </Window>
