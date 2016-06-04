@@ -25,7 +25,6 @@ namespace IpcClientTest
 			//null と "" は弾きたい
 			if(text?.Length > 0)
 			{
-				//stackListに直接addできないっぽい
 				Client.RemoteObject.OnMessageReceived(text);
 			}
 

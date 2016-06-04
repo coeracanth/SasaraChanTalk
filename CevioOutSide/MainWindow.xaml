@@ -78,9 +78,9 @@
 			SelectedItem="{Binding Talker.Cast}"
 			SelectionChanged="ComboBox_SelectionChanged"
 			></ComboBox>
-		<Button Content="発声" Click="Button_Click"></Button>
+		<Button Content="発声" Click="Button_addStack_Click"></Button>
 				<Label Content="スタック数 : "></Label>
-				<Label Content="{Binding TalkStack.RemoteObject.TalkTextStack.Count}"></Label>
+				<Label Content="{Binding TalkStack.Count}"></Label>
 
 			</StackPanel>
 			<TextBox Text="{Binding NowTalkText}" DockPanel.Dock="Top" IsEnabled="False" AcceptsReturn="True" ></TextBox>

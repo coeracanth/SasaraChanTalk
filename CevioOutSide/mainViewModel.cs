@@ -8,12 +8,15 @@ using CeVIO.Talk.RemoteService;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace CevioOutSide
 {
 	class mainViewModel:ViewModelBase, IMainViewModel
 	{
 		private string _nowTalkText;
+		private SpeakingState _speakingState;
 
 		#region prop
 		public Talker Talker
@@ -22,6 +25,9 @@ namespace CevioOutSide
 			set;
 		} = new Talker();
 
+		/// <summary>
+		/// 有効なキャスト
+		/// </summary>
 		public IList<string> AvailabeCast
 		{
 			get
@@ -30,16 +36,20 @@ namespace CevioOutSide
 			}
 		}
 
+		/// <summary>
+		/// トーク入力用
+		/// </summary>
 		public string TalkText
 		{
 			get;
 			set;
 		} = "テストですよー？";
 
-		private SpeakingState _speakingState;
-
 		public IpcSample.IpcServer IpcServer { get; set; }
 
+		/// <summary>
+		/// 最終発言、表示用
+		/// </summary>
 		public string NowTalkText
 		{
 			get
@@ -54,10 +64,28 @@ namespace CevioOutSide
 			}
 		}
 
-		public IList<string> TalkStack { get; set; } = new List<string>();
+		public IList<string> TalkStack { get; set; } = new ObservableCollection<string>();
 		#endregion
 
 		public mainViewModel()
+		{
+			InitCeVIO();
+			InitIpcServer();
+		}
+
+		/// <summary>
+		/// メッセージ受信サーバを設定
+		/// </summary>
+		private void InitIpcServer()
+		{
+			IpcServer = new IpcSample.IpcServer();
+			IpcServer.RemoteObject.MessageReceived += RemoteObject_MessageReceived;
+		}
+
+		/// <summary>
+		/// CeVIOと接続、パラの初期化
+		/// </summary>
+		private void InitCeVIO()
 		{
 			ServiceControl.StartHost(false);
 			Talker.Cast = AvailabeCast?[0] ?? null;
@@ -67,22 +95,33 @@ namespace CevioOutSide
 			Talker.Tone = 50;
 			Talker.Alpha = 50;
 			Talker.ToneScale = 100;
-
-			IpcServer = new IpcSample.IpcServer();
-
-			IpcServer.RemoteObject.MessageReceived += RemoteObject_MessageReceived;
 		}
 
-		private void RemoteObject_MessageReceived(string obj)
+		/// <summary>
+		/// トーク受信処理
+		/// </summary>
+		/// <param name="talkText"></param>
+		private void RemoteObject_MessageReceived(string talkText)
 		{
-			TalkStack.Add(obj);
-
-			if (!isTalking)
+			try
 			{
-				isTalking = true;
-				Speak();
-				isTalking = false;
+				if(talkText?.Length > 0)
+				{
+					TalkStack.Add(talkText);
+				}
+
+				if (!isTalking)
+				{
+					isTalking = true;
+					Speak();
+					isTalking = false;
+				}
 			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
+
 		}
 
 		private bool isTalking = false;
@@ -94,29 +133,13 @@ namespace CevioOutSide
 		{
 			if (_speakingState?.IsCompleted ?? true)
 			{
-				var text = TalkStack.FirstOrDefault();
-				if(text == null)
+				//再帰処理の終了条件
+				if(TalkStack.Count == 0)
 				{
 					return;
 				}
 
-				//取得できたら削除
-				TalkStack.RemoveAt(0);
-
-				text = Regex.Replace(text, @"https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。");
-
-				//100文字制限への対応
-				//超過分は分割してスタックの先頭に返す
-				if (text.Length > 100)
-				{
-					var over = text.Substring(100);
-					TalkStack.Insert(0, over);
-
-					text = text.Substring(0, 100);
-				}
-
-				NowTalkText = text.ToUpper();
-
+				NowTalkText = GetNextTalkText();
 
 				_speakingState = Talker.Speak(this.NowTalkText);
 
@@ -128,6 +151,34 @@ namespace CevioOutSide
 				//再帰
 				Speak();
 			}
+		}
+
+		/// <summary>
+		/// 次のトークの取得、Getと言いつつコレクション操作してる注意
+		/// 前提 : TalkStackにnullでないItemが存在する
+		/// </summary>
+		/// <returns></returns>
+		private string GetNextTalkText()
+		{
+			var text = TalkStack.First();
+
+			//取得できたら削除
+			TalkStack.RemoveAt(0);
+
+			//整形
+			text = Regex.Replace(text, @"https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。").ToUpper();
+
+			//100文字制限への対応
+			//超過分は分割してスタックの先頭に返す
+			if (text.Length > 100)
+			{
+				var over = text.Substring(100);
+				TalkStack.Insert(0, over);
+
+				text = text.Substring(0, 100);
+			}
+
+			return text;
 		}
 
 		public void AddTalkStack()
@@ -153,7 +204,6 @@ namespace CevioOutSide
 
 		string TalkText { get; set; }
 
-		void Speak();
 		void DelTalkStack();
 		void AddTalkStack();
 

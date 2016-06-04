@@ -29,11 +29,10 @@ namespace CevioOutSide
 			this._viewMdel = (mainViewModel)DataContext;
 
 			SliderPanel.Children.Add(loadComponentsSlider());
-
 		}
 
 		/// <summary>
-		/// 感情パラのスライダを動的生成
+		/// 感情パラのスライダを生成
 		/// </summary>
 		/// <returns></returns>
 		private StackPanel loadComponentsSlider()
@@ -76,7 +75,7 @@ namespace CevioOutSide
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void Button_addStack_Click(object sender, RoutedEventArgs e)
 		{
 			this._viewMdel.AddTalkStack();
 		}
