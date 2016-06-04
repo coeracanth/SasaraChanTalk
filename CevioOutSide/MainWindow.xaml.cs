@@ -22,32 +22,15 @@ namespace CevioOutSide
 	public partial class MainWindow : Window
 	{
 		private IMainViewModel _viewMdel;
-		private DispatcherTimer _timer;
 
 		public MainWindow()
 		{
 			InitializeComponent();
 			this._viewMdel = (mainViewModel)DataContext;
 
-			_timer = new DispatcherTimer();
-			_timer.Interval = new TimeSpan(0, 0, 1);
-			_timer.Tick += _timer_Tick;
-			_timer.Start();
-
 			SliderPanel.Children.Add(loadComponentsSlider());
 
 		}
-
-		/// <summary>
-		/// speakの呼び出し
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void _timer_Tick(object sender, EventArgs e)
-		{
-			_viewMdel.Speak();
-		}
-
 
 		/// <summary>
 		/// 感情パラのスライダを動的生成

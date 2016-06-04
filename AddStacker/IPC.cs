@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.Remoting.Lifetime;
+using System.Windows.Data;
 
 namespace IpcSample
 {
@@ -43,31 +44,18 @@ namespace IpcSample
 			// クライアントチャンネルの生成
 			IpcClientChannel channel = new IpcClientChannel();
 
+			//不要？
 			// チャンネルを登録
 			ChannelServices.RegisterChannel(channel, true);
 
 			// リモートオブジェクトを取得
 			RemoteObject = Activator.GetObject(typeof(IpcRemoteObject), "ipc://CeVIOOutSideReader/TextStack") as IpcRemoteObject;
 		}
+
 	}
 
-	public class IpcRemoteObject : MarshalByRefObject, INotifyPropertyChanged
+	public class IpcRemoteObject : MarshalByRefObject
 	{
-		public IList<string> TalkTextStack { get; set; } = new ObservableCollection<string>();
-
-		public event PropertyChangedEventHandler PropertyChanged;
-		/// <summary>
-		/// PropertyChanged イベント を発生させます。
-		/// </summary>
-		/// <param name="propertyName">変更されたプロパティの名前</param>
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-		{
-			if (this.PropertyChanged != null)
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-
 		/// <summary>
 		/// タイムアウトを回避する
 		/// </summary>
@@ -76,5 +64,18 @@ namespace IpcSample
 			return null;
 		}
 
+		/// <summary> 
+		/// メッセージを受信したときに発生します。 
+		/// </summary> 
+		public event Action<string> MessageReceived;
+
+		/// <summary> 
+		/// MessageEventHandler イベントを発生させます。 
+		/// </summary> 
+		public void OnMessageReceived(string message)
+		{
+			if (MessageReceived != null)
+				MessageReceived(message);
+		}
 	}
 }

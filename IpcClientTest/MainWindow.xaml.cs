@@ -26,9 +26,7 @@ namespace IpcClientTest
 			if(text?.Length > 0)
 			{
 				//stackListに直接addできないっぽい
-				var stack = Client.RemoteObject.TalkTextStack;
-				stack.Add(text);
-				Client.RemoteObject.TalkTextStack = stack;
+				Client.RemoteObject.OnMessageReceived(text);
 			}
 
 		}
