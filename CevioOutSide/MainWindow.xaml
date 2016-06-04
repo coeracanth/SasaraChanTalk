@@ -79,9 +79,13 @@
 			SelectionChanged="ComboBox_SelectionChanged"
 			></ComboBox>
 		<Button Content="発声" Click="Button_Click"></Button>
-		</StackPanel>
+				<Label Content="スタック数 : "></Label>
+				<Label Content="{Binding TalkStack.RemoteObject.TalkTextStack.Count}"></Label>
+
+			</StackPanel>
 			<TextBox Text="{Binding NowTalkText}" DockPanel.Dock="Top" IsEnabled="False" AcceptsReturn="True" ></TextBox>
 			<TextBox Text="{Binding TalkText}" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" MinHeight="60" />
+			
 		</DockPanel>
 	</DockPanel>
 </Window>
