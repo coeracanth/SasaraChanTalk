@@ -78,7 +78,8 @@
 			SelectedItem="{Binding Talker.Cast}"
 			SelectionChanged="ComboBox_SelectionChanged"
 			></ComboBox>
-		<Button Content="発声" Click="Button_addStack_Click"></Button>
+				<Button Content="発声" Click="Button_addStack_Click"></Button>
+				<Button Content="スタックをクリア" Click="Button_clear_Click"></Button>
 				<Label Content="スタック数 : "></Label>
 				<Label Content="{Binding TalkStack.Count}"></Label>
 

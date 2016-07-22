@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace CevioOutSide
 {
-	class mainViewModel:ViewModelBase, IMainViewModel
+	public class mainViewModel:ViewModelBase, IMainViewModel
 	{
 		private string _nowTalkText;
 		private SpeakingState _speakingState;
@@ -28,13 +28,7 @@ namespace CevioOutSide
 		/// <summary>
 		/// 有効なキャスト
 		/// </summary>
-		public IList<string> AvailabeCast
-		{
-			get
-			{
-				return Talker.AvailableCasts;
-			}
-		}
+		public IList<string> AvailabeCast => Talker.AvailableCasts;
 
 		/// <summary>
 		/// トーク入力用
@@ -164,9 +158,7 @@ namespace CevioOutSide
 
 			//取得できたら削除
 			TalkStack.RemoveAt(0);
-
-			//整形
-			text = Regex.Replace(text, @"https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。").ToUpper();
+			text = TrimText(text);
 
 			//100文字制限への対応
 			//超過分は分割してスタックの先頭に返す
@@ -179,6 +171,16 @@ namespace CevioOutSide
 			}
 
 			return text;
+		}
+
+		/// <summary>
+		/// htmlの省略、及び大文字変換
+		/// </summary>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		public static string TrimText(string text)
+		{
+			return Regex.Replace(text, @"https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。").ToUpper();
 		}
 
 		public void AddTalkStack()
