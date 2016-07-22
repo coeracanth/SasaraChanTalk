@@ -6,37 +6,44 @@ using System.Threading.Tasks;
 using ViewModels;
 using CeVIO.Talk.RemoteService;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace CevioOutSide
 {
-	class mainViewModel:ViewModelBase, IMainViewModel
+	public class mainViewModel:ViewModelBase, IMainViewModel
 	{
 		private string _nowTalkText;
+		private SpeakingState _speakingState;
 
+		#region prop
 		public Talker Talker
 		{
 			get;
 			set;
 		} = new Talker();
 
-		public IList<string> AvailabeCast
-		{
-			get
-			{
-				return Talker.AvailableCasts;
-			}
-		}
+		/// <summary>
+		/// 有効なキャスト
+		/// </summary>
+		public IList<string> AvailabeCast => Talker.AvailableCasts;
 
+		/// <summary>
+		/// トーク入力用
+		/// </summary>
 		public string TalkText
 		{
 			get;
 			set;
-		} = "テストですにー。テストと言ったらテストなんですにー。おちんぽしゃぶしゃぶ！";
+		} = "テストですよー？";
 
-		private SpeakingState _speakingState;
+		public IpcSample.IpcServer IpcServer { get; set; }
 
-		public IpcSample.IpcServer TalkStack { get; set; }
-
+		/// <summary>
+		/// 最終発言、表示用
+		/// </summary>
 		public string NowTalkText
 		{
 			get
@@ -51,7 +58,28 @@ namespace CevioOutSide
 			}
 		}
 
+		public IList<string> TalkStack { get; set; } = new ObservableCollection<string>();
+		#endregion
+
 		public mainViewModel()
+		{
+			InitCeVIO();
+			InitIpcServer();
+		}
+
+		/// <summary>
+		/// メッセージ受信サーバを設定
+		/// </summary>
+		private void InitIpcServer()
+		{
+			IpcServer = new IpcSample.IpcServer();
+			IpcServer.RemoteObject.MessageReceived += RemoteObject_MessageReceived;
+		}
+
+		/// <summary>
+		/// CeVIOと接続、パラの初期化
+		/// </summary>
+		private void InitCeVIO()
 		{
 			ServiceControl.StartHost(false);
 			Talker.Cast = AvailabeCast?[0] ?? null;
@@ -61,45 +89,98 @@ namespace CevioOutSide
 			Talker.Tone = 50;
 			Talker.Alpha = 50;
 			Talker.ToneScale = 100;
-
-			TalkStack = new IpcSample.IpcServer();
 		}
 
 		/// <summary>
-		/// スタックの先頭をcevioに渡す。
-		/// timerで呼び出しかなあ、
-		/// stateのcompletedを検知できればstackが尽きるまで回すとかできそうだけど
-		/// state.wait()でのループはUI触れなくなるのでなし。
-		/// 別スレッドでやればいいかもしれんがやり方わからん
+		/// トーク受信処理
 		/// </summary>
-		public void Speak()
+		/// <param name="talkText"></param>
+		private void RemoteObject_MessageReceived(string talkText)
+		{
+			try
+			{
+				if(talkText?.Length > 0)
+				{
+					TalkStack.Add(talkText);
+				}
+
+				if (!isTalking)
+				{
+					isTalking = true;
+					Speak();
+					isTalking = false;
+				}
+			}
+			catch(Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
+
+		}
+
+		private bool isTalking = false;
+
+		/// <summary>
+		/// スタックの先頭をcevioに渡す。
+		/// </summary>
+		public async void Speak()
 		{
 			if (_speakingState?.IsCompleted ?? true)
 			{
-				var text = TalkStack.RemoteObject.TalkTextStack.FirstOrDefault();
-				if(text == null)
+				//再帰処理の終了条件
+				if(TalkStack.Count == 0)
 				{
 					return;
 				}
 
-				//取得できたら削除
-				TalkStack.RemoteObject.TalkTextStack.RemoveAt(0);
+				NowTalkText = GetNextTalkText();
 
-				text = Regex.Replace(text, @"https ?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。");
-
-				//100文字制限への対応
-				//超過分は分割してスタックの先頭に返す
-				if (text.Length > 100)
-				{
-					var over = text.Substring(100);
-					TalkStack.RemoteObject.TalkTextStack.Insert(0, over);
-
-					text = text.Substring(0, 100);
-				}
-
-				NowTalkText = text.ToUpper();
 				_speakingState = Talker.Speak(this.NowTalkText);
+
+				await Task.Run(() =>
+				{
+					_speakingState.Wait();
+				});
+
+				//再帰
+				Speak();
 			}
+		}
+
+		/// <summary>
+		/// 次のトークの取得、Getと言いつつコレクション操作してる注意
+		/// 前提 : TalkStackにnullでないItemが存在する
+		/// </summary>
+		/// <returns></returns>
+		private string GetNextTalkText()
+		{
+			var text = TalkStack.First();
+
+			//取得できたら削除
+			TalkStack.RemoveAt(0);
+			text = TrimText(text);
+
+			//100文字制限への対応
+			//超過分は分割してスタックの先頭に返す
+			if (text.Length > 100)
+			{
+				var over = text.Substring(100);
+				TalkStack.Insert(0, over);
+
+				text = text.Substring(0, 100);
+			}
+
+			return text;
+		}
+
+		/// <summary>
+		/// htmlの省略、及び大文字変換
+		/// </summary>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		public static string TrimText(string text)
+		{
+			return Regex.Replace(text, @"https?://[\w/:%#\$&\?\(\)~\.=\+\-]+", "URL省略。").ToUpper();
 		}
 
 		public void AddTalkStack()
@@ -109,12 +190,12 @@ namespace CevioOutSide
 
 		private void AddTalkStack(string talkText)
 		{
-			TalkStack.RemoteObject.TalkTextStack.Add(talkText);
+			this.IpcServer.RemoteObject.OnMessageReceived(talkText);
 		}
 
 		public void DelTalkStack()
 		{
-			TalkStack.RemoteObject.TalkTextStack.Clear();
+			TalkStack.Clear();
 		}
 	}
 
@@ -125,7 +206,6 @@ namespace CevioOutSide
 
 		string TalkText { get; set; }
 
-		void Speak();
 		void DelTalkStack();
 		void AddTalkStack();
 
