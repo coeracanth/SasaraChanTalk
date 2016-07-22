@@ -21,19 +21,17 @@ namespace CevioOutSide
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private IMainViewModel _viewMdel;
+		private IMainViewModel ViewModel { get { return (IMainViewModel)this.DataContext; } }
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			this._viewMdel = (mainViewModel)DataContext;
 
 			SliderPanel.Children.Add(loadComponentsSlider());
-
 		}
 
 		/// <summary>
-		/// 感情パラのスライダを動的生成
+		/// 感情パラのスライダを生成
 		/// </summary>
 		/// <returns></returns>
 		private StackPanel loadComponentsSlider()
@@ -43,7 +41,7 @@ namespace CevioOutSide
 			panel.SetValue(Grid.ColumnProperty, 1);
 
 			//foreachは使えないみたい
-			var count = _viewMdel.Talker.Components.Count;
+			var count = ViewModel.Talker.Components.Count;
 			for (int counta = 0; counta < count; counta++)
 			{
 				Binding bind = new Binding();
@@ -62,7 +60,7 @@ namespace CevioOutSide
 				dockp.Children.Add(sld);
 
 				GroupBox gbox = new GroupBox();
-				gbox.Header = _viewMdel.Talker.Components[counta].Name;
+				gbox.Header = ViewModel.Talker.Components[counta].Name;
 				gbox.Content = dockp;
 
 				panel.Children.Add(gbox);
@@ -76,14 +74,14 @@ namespace CevioOutSide
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void Button_addStack_Click(object sender, RoutedEventArgs e)
 		{
-			this._viewMdel.AddTalkStack();
+			this.ViewModel.AddTalkStack();
 		}
 
 		/// <summary>
 		/// キャスト変更で感情パラ用スライダを変更
-		/// propChange検知してできないかなあ
+		/// propChange検知とselectionchangeどちらがいいか
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -94,6 +92,16 @@ namespace CevioOutSide
 				SliderPanel.Children.RemoveAt(1);
 				SliderPanel.Children.Add(loadComponentsSlider());
 			}
+		}
+
+		/// <summary>
+		/// スタックをクリア
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Button_clear_Click(object sender, RoutedEventArgs e)
+		{
+			this.ViewModel.DelTalkStack();
 		}
 	}
 }

@@ -9,7 +9,10 @@ namespace CevioOutSideTest
 		[TestMethod]
 		public void TestMethod1()
 		{
+			var src = "http://example.com/";
+			var dst = "URL省略。";
 
+			Assert.AreEqual(CevioOutSide.mainViewModel.TrimText(src), dst);
 		}
 	}
 }
