@@ -11,7 +11,7 @@ using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Windows;
 
-namespace CevioOutSide
+namespace SasaraChanTalk
 {
 	public class mainViewModel:ViewModelBase, IMainViewModel
 	{

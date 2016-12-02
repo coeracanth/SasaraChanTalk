@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CevioOutSideTest
+namespace SasaraChanTalkTest
 {
 	[TestClass]
 	public class UnitTest1
@@ -12,7 +12,7 @@ namespace CevioOutSideTest
 			var src = "http://example.com/";
 			var dst = "URL省略。";
 
-			Assert.AreEqual(CevioOutSide.mainViewModel.TrimText(src), dst);
+			Assert.AreEqual(SasaraChanTalk.mainViewModel.TrimText(src), dst);
 		}
 	}
 }

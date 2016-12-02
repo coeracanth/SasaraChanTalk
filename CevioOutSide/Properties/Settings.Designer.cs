@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace CevioOutSide.Properties {
+namespace SasaraChanTalk.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

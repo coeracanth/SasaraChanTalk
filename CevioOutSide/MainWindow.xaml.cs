@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace CevioOutSide
+namespace SasaraChanTalk
 {
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
