@@ -1,47 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Threading;
-
-namespace SasaraChanTalk
+﻿namespace SasaraChanTalk
 {
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using System.Threading.Tasks;
+	using System.Windows;
+	using System.Windows.Controls;
+	using System.Windows.Data;
+	using System.Windows.Documents;
+	using System.Windows.Input;
+	using System.Windows.Media;
+	using System.Windows.Media.Imaging;
+	using System.Windows.Navigation;
+	using System.Windows.Shapes;
+	using System.Windows.Threading;
+
 	/// <summary>
 	/// MainWindow.xaml の相互作用ロジック
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private IMainViewModel ViewModel { get { return (IMainViewModel)this.DataContext; } }
-
 		public MainWindow()
 		{
-			InitializeComponent();
+			this.InitializeComponent();
 
-			SliderPanel.Children.Add(loadComponentsSlider());
+			this.SliderPanel.Children.Add(this.LoadComponentsSlider());
+		}
+
+		private IMainViewModel ViewModel
+		{
+			get { return (IMainViewModel)this.DataContext; }
 		}
 
 		/// <summary>
 		/// 感情パラのスライダを生成
 		/// </summary>
-		/// <returns></returns>
-		private StackPanel loadComponentsSlider()
+		/// <returns>slider</returns>
+		private StackPanel LoadComponentsSlider()
 		{
 			var panel = new StackPanel();
 
 			panel.SetValue(Grid.ColumnProperty, 1);
 
-			//foreachは使えないみたい
-			var count = ViewModel.Talker.Components.Count;
+			// foreachは使えないみたい
+			var count = this.ViewModel.Talker.Components.Count;
 			for (int counta = 0; counta < count; counta++)
 			{
 				Binding bind = new Binding();
@@ -60,7 +63,7 @@ namespace SasaraChanTalk
 				dockp.Children.Add(sld);
 
 				GroupBox gbox = new GroupBox();
-				gbox.Header = ViewModel.Talker.Components[counta].Name;
+				gbox.Header = this.ViewModel.Talker.Components[counta].Name;
 				gbox.Content = dockp;
 
 				panel.Children.Add(gbox);
@@ -72,8 +75,8 @@ namespace SasaraChanTalk
 		/// <summary>
 		/// talktextの内容をスタックへ
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">親</param>
+		/// <param name="e">イベント</param>
 		private void Button_addStack_Click(object sender, RoutedEventArgs e)
 		{
 			this.ViewModel.AddTalkStack();
@@ -83,22 +86,22 @@ namespace SasaraChanTalk
 		/// キャスト変更で感情パラ用スライダを変更
 		/// propChange検知とselectionchangeどちらがいいか
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">親</param>
+		/// <param name="e">イベント</param>
 		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if(SliderPanel.Children.Count >= 2)
+			if (this.SliderPanel.Children.Count >= 2)
 			{
-				SliderPanel.Children.RemoveAt(1);
-				SliderPanel.Children.Add(loadComponentsSlider());
+				this.SliderPanel.Children.RemoveAt(1);
+				this.SliderPanel.Children.Add(this.LoadComponentsSlider());
 			}
 		}
 
 		/// <summary>
 		/// スタックをクリア
 		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		/// <param name="sender">親</param>
+		/// <param name="e">送信元</param>
 		private void Button_clear_Click(object sender, RoutedEventArgs e)
 		{
 			this.ViewModel.DelTalkStack();

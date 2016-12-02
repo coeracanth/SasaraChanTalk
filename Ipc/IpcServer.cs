@@ -1,16 +1,10 @@
-﻿using System;
-using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
-using System.Runtime.Remoting.Channels.Ipc;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.Remoting.Lifetime;
-using System.Windows.Data;
-
-namespace IpcSample
+﻿namespace IpcSample
 {
+	using System;
+	using System.Runtime.Remoting;
+	using System.Runtime.Remoting.Channels;
+	using System.Runtime.Remoting.Channels.Ipc;
+
 	public class IpcServer
 	{
 		public IpcRemoteObject RemoteObject { get; set; }

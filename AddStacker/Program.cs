@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AddStacker
+﻿namespace AddStacker
 {
-	class Program
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Runtime.Remoting;
+	using System.Text;
+	using System.Threading.Tasks;
+
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			if (args.Length < 1)
 			{
@@ -22,15 +22,14 @@ namespace AddStacker
 
 			try
 			{
-			//null と "" は弾きたい
+			// null と "" は弾きたい
 			if (text?.Length > 0)
 			{
-				//stackListに直接addできないっぽい
+				// stackListに直接addできないっぽい
 				client.RemoteObject.OnMessageReceived(text);
 			}
-
 			}
-			catch(RemotingException ex)
+			catch (RemotingException ex)
 			{
 				Console.WriteLine(ex.Message);
 				return;

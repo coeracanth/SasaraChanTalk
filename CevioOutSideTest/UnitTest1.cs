@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace SasaraChanTalkTest
+﻿namespace SasaraChanTalkTest
 {
+	using System;
+	using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 	[TestClass]
 	public class UnitTest1
 	{
@@ -12,7 +12,7 @@ namespace SasaraChanTalkTest
 			var src = "http://example.com/";
 			var dst = "URL省略。";
 
-			Assert.AreEqual(SasaraChanTalk.mainViewModel.TrimText(src), dst);
+			Assert.AreEqual(SasaraChanTalk.MainViewModel.TrimText(src), dst);
 		}
 	}
 }

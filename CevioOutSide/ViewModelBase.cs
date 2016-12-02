@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Linq.Expressions;
-
-namespace ViewModels
+﻿namespace ViewModels
 {
+	using System;
+	using System.ComponentModel;
+	using System.Linq.Expressions;
+	using System.Runtime.CompilerServices;
 
 	/// <summary>
 	/// ViewModel 基底クラス を表現します。

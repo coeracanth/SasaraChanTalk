@@ -10,7 +10,7 @@
 		SizeToContent="Height"
 		>
 	<Window.DataContext>
-		<local:mainViewModel></local:mainViewModel>
+		<local:MainViewModel></local:MainViewModel>
 	</Window.DataContext>
 
 	<Window.Resources>
