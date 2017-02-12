@@ -11,13 +11,14 @@
 	using System.Threading.Tasks;
 	using System.Windows;
 	using CeVIO.Talk.RemoteService;
+	using Models;
 	using ViewModels;
 
 	internal interface IMainViewModel
 	{
 		IList<string> AvailabeCast { get; }
 
-		Talker Talker { get; set; }
+		Models.ITalker Talker { get; set; }
 
 		string TalkText { get; set; }
 
@@ -29,7 +30,6 @@
 	public class MainViewModel : ViewModelBase, IMainViewModel
 	{
 		private string nowTalkText;
-		private SpeakingState speakingState;
 		private bool isTalking = false;
 
 		public MainViewModel()
@@ -37,14 +37,6 @@
 			this.InitCeVIO();
 			this.InitIpcServer();
 		}
-
-		public Talker Talker
-		{
-			get;
-			set;
-		}
-
-		= new Talker();
 
 		/// <summary>
 		/// 有効なキャスト
@@ -83,6 +75,8 @@
 
 		public IList<string> TalkStack { get; set; } = new ObservableCollection<string>();
 
+		public ITalker Talker { get; set; } = new Models.Talker();
+
 		/// <summary>
 		/// htmlの省略、及び大文字変換
 		/// </summary>
@@ -98,22 +92,17 @@
 		/// </summary>
 		public async void Speak()
 		{
-			if (this.speakingState?.IsCompleted ?? true)
+			if (!this.Talker.IsSpeaking)
 			{
 				// 再帰処理の終了条件
-				if (this.TalkStack.Count == 0)
+				if (!this.TalkStack.Any())
 				{
 					return;
 				}
 
 				this.NowTalkText = this.GetNextTalkText();
 
-				this.speakingState = this.Talker.Speak(this.NowTalkText);
-
-				await Task.Run(() =>
-				{
-					this.speakingState.Wait();
-				});
+				await this.Talker.SpeakAsync(this.NowTalkText);
 
 				// 再帰
 				this.Speak();
@@ -145,13 +134,6 @@
 		private void InitCeVIO()
 		{
 			ServiceControl.StartHost(false);
-			this.Talker.Cast = this.AvailabeCast?[0] ?? null;
-
-			this.Talker.Volume = 100;
-			this.Talker.Speed = 50;
-			this.Talker.Tone = 50;
-			this.Talker.Alpha = 50;
-			this.Talker.ToneScale = 100;
 		}
 
 		/// <summary>
