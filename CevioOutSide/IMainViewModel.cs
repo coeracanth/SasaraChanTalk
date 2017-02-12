@@ -21,6 +21,8 @@
 
 		string TalkText { get; set; }
 
+		string NowTalkText { get; set; }
+
 		void DelTalkStack();
 
 		void AddTalkStack();
